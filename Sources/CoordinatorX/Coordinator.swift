@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol Coordinator: AnyObject {
+public protocol Coordinator: AnyObject {
     associatedtype RouteType: Route
     associatedtype Content: View
     associatedtype TransitionType: TransitionTypeProtocol

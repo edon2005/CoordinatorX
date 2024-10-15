@@ -5,4 +5,4 @@
 //  Created by Yevhen Don on 15/10/2024.
 //
 
-protocol TransitionTypeProtocol {}
+public protocol TransitionTypeProtocol {}

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol DefaultFlow: View {
+public protocol DefaultViewFlow: View {
     associatedtype CoordinatorType: Coordinator
 
     var coordinator: CoordinatorType { get set }
@@ -15,7 +15,7 @@ protocol DefaultFlow: View {
     init(coordinator: CoordinatorType)
 }
 
-extension DefaultFlow where CoordinatorType.TransitionType == ViewTransitionType {
+public extension DefaultViewFlow where CoordinatorType.TransitionType == ViewTransitionType {
     var body: some View {
         MainViewContext(coordinator: coordinator)
     }

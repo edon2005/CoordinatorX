@@ -6,7 +6,7 @@
 //
 
 @MainActor
-protocol Router<RouteType>: AnyObject, Sendable {
+public protocol Router<RouteType>: AnyObject, Sendable {
     associatedtype RouteType: Route
 
     func trigger(_ route: RouteType)
