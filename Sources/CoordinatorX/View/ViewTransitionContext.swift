@@ -7,52 +7,113 @@
 
 import Foundation
 
-public class ViewTransitionContext<RouteType: Route, CoordinatorType: Coordinator>: ObservableObject, Router where RouteType == CoordinatorType.RouteType, CoordinatorType.TransitionType == ViewTransitionType {
+public final class ViewTransitionContext<RouteType: Route, CoordinatorType: ViewCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
 
     @Published
-    var route: RouteType
+    public var rootRoute: RouteType
 
     @Published
-    var fullScreenCoverRoute: RouteType?
+    public var fullScreenRoute: RouteType?
 
     @Published
-    var overlayRoute: RouteType?
+    public var overlayRoute: RouteType?
 
     @Published
-    var sheetRoute: RouteType?
+    public var sheetRoute: RouteType?
 
-    weak var prevTransitionContext: ViewTransitionContext<RouteType, CoordinatorType>?
+    weak var prevTransitionContext: ViewTransitionContext?
+    weak var parentRouter: (any Router<RouteType>)? {
+        prevTransitionContext
+    }
+    weak public var nextTransitionContext: ViewTransitionContext?
 
-    private weak var delegate: CoordinatorType?
+    weak var delegate: CoordinatorType?
+
+    nonisolated(unsafe) var onDeinit: (() -> Void)?
+
     private var isRoot: Bool
 
-    init(route: RouteType, delegate: CoordinatorType?, isRoot: Bool = false, prevTransitionContext: ViewTransitionContext<RouteType, CoordinatorType>? = nil) {
-        self.route = route
+
+    required public init(rootRoute: RouteType, delegate: CoordinatorType?, isRoot: Bool = false, prevTransitionContext: ViewTransitionContext? = nil) {
+        self.rootRoute = rootRoute
         self.delegate = delegate
         self.prevTransitionContext = prevTransitionContext
         self.isRoot = isRoot
+        self.prevTransitionContext?.nextTransitionContext = self
+    }
+
+    deinit {
+        onDeinit?()
     }
 
     public func trigger(_ route: RouteType) {
         guard let transition = delegate?.prepareTransition(for: route) else { return }
+        contextTrigger(route: route, transition: transition)
+    }
+
+    private func contextTrigger(route: RouteType, transition: ViewTransitionType) {
         switch transition {
-        case .fullScreen: self.fullScreenCoverRoute = route
+        case .dismiss: dismiss()
+        case .fullScreen: setFullScreenRoute(route)
+        case let .multiple(value):
+            value.forEach { value in
+                self.contextTrigger(route: route, transition: value)
+            }
         case .none: break
-        case .overlay: self.overlayRoute = route
-        case .parent: break
-        case .root: self.getRootContext()?.route = route
-        case .set: self.route = route
-        case .sheet: self.sheetRoute = route
+        case .overlay: setOverlayRoute(route)
+        case .root: self.getRootContext()?.rootRoute = route
+        case .set: self.rootRoute = route
+        case .sheet: setSheetRoute(route)
         }
+    }
+
+    private func dismiss() {
+        prevTransitionContext?.sheetRoute = nil
+        prevTransitionContext?.overlayRoute = nil
+        prevTransitionContext?.fullScreenRoute = nil
     }
 
     private func getRootContext() -> ViewTransitionContext<RouteType, CoordinatorType>? {
         isRoot ? self : prevTransitionContext?.getRootContext()
     }
-}
 
-extension ViewTransitionContext where CoordinatorType: RedirectionCoordinator, RouteType == CoordinatorType.RouteType, CoordinatorType.TransitionType == ViewTransitionType, CoordinatorType.ParentRouteType: Route {
-    public func trigger(_ route: RouteType) {
-        print("Redirection")
+    private func setFullScreenRoute(_ route: RouteType) {
+        let onDeinit: () -> Void = {
+            Task {
+                self.fullScreenRoute = route
+            }
+        }
+
+        if sheetRoute != nil {
+            nextTransitionContext?.onDeinit = onDeinit
+            fullScreenRoute = nil
+        } else if self.fullScreenRoute != nil  {
+            nextTransitionContext?.onDeinit = onDeinit
+            self.fullScreenRoute = nil
+        } else {
+            self.fullScreenRoute = route
+        }
+    }
+
+    private func setOverlayRoute(_ route: RouteType) {
+        overlayRoute = route
+    }
+
+    private func setSheetRoute(_ route: RouteType) {
+        let onDeinit: () -> Void = {
+            Task {
+                self.sheetRoute = route
+            }
+        }
+
+        if fullScreenRoute != nil {
+            nextTransitionContext?.onDeinit = onDeinit
+            fullScreenRoute = nil
+        } else if self.sheetRoute != nil  {
+            nextTransitionContext?.onDeinit = onDeinit
+            self.sheetRoute = nil
+        } else {
+            self.sheetRoute = route
+        }
     }
 }

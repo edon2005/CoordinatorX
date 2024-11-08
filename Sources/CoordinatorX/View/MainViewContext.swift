@@ -7,15 +7,12 @@
 
 import SwiftUI
 
-public struct MainViewContext<RouteType: Route, CoordinatorType: Coordinator>: View where CoordinatorType.RouteType == RouteType, CoordinatorType.TransitionType == ViewTransitionType {
-
+public struct MainViewContext<CoordinatorType: ViewCoordinator>: View {
     let coordinator: CoordinatorType
+}
 
-    public var body: some View {
-        ViewContext(route: coordinator.initialRoute, coordinator: coordinator, isRoot: true)
-    }
-
-    public init(coordinator: CoordinatorType) {
-        self.coordinator = coordinator
+public extension MainViewContext {
+    var body: some View {
+        ViewContext(rootRoute: coordinator.initialRoute, coordinator: coordinator, isRoot: true)
     }
 }

@@ -8,15 +8,17 @@
 import SwiftUI
 
 public protocol Coordinator: AnyObject {
-    associatedtype RouteType: Route
+
     associatedtype Content: View
+    associatedtype RouteType: Route
     associatedtype TransitionType: TransitionTypeProtocol
 
     var initialRoute: RouteType { get set }
 
     @MainActor
-    func prepareView(for route: RouteType, router: any Router<RouteType>) -> Content
+    func prepareTransition(for route: RouteType) -> TransitionType
 
     @MainActor
-    func prepareTransition(for route: RouteType) -> TransitionType
+    func prepareView(for route: RouteType, router: any Router<RouteType>) -> Content
+
 }
