@@ -9,5 +9,7 @@
 public protocol Router<RouteType>: AnyObject, Sendable {
     associatedtype RouteType: Route
 
+    var prevRouter: (any Router<RouteType>)? { get }
+
     func trigger(_ route: RouteType)
 }

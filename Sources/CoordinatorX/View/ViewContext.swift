@@ -7,33 +7,37 @@
 
 import SwiftUI
 
-public struct ViewContext<RouteType: Route, ViewBuilderType: Coordinator>: View where ViewBuilderType.RouteType == RouteType, ViewBuilderType.TransitionType == ViewTransitionType {
+public struct ViewContext<RouteType: Route,
+                          CoordinatorType: ViewCoordinator>: Context where CoordinatorType.RouteType == RouteType {
+
+    @State
+    private var content: CoordinatorType.Content?
 
     @StateObject
-    private var tranisitionContext: ViewTransitionContext<RouteType, ViewBuilderType>
-    private let coordinator: ViewBuilderType
+    public var tranisitionContext: ViewTransitionContext<RouteType, CoordinatorType>
+
+    private let coordinator: CoordinatorType
 
     public var body: some View {
-        coordinator
-            .prepareView(for: tranisitionContext.route, router: tranisitionContext)
-            .fullScreenCover(item: $tranisitionContext.fullScreenCoverRoute) { route in
-                Self(route: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+        coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
+            .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
+                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
             }
-            .overlay(overlay)
+            .overlay {
+                if let route = tranisitionContext.overlayRoute {
+                    Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                }
+            }
             .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(route: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
             }
     }
 
-    @ViewBuilder
-    private var overlay: some View {
-        if let route = tranisitionContext.overlayRoute {
-            Self(route: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
-        }
-    }
-
-    public init(route: RouteType, coordinator: ViewBuilderType, isRoot: Bool = false, prevTransitionContext: ViewTransitionContext<RouteType, ViewBuilderType>? = nil) {
+    public init(rootRoute: RouteType,
+                coordinator: CoordinatorType,
+                isRoot: Bool = false,
+                prevTransitionContext: ViewTransitionContext<RouteType, CoordinatorType>? = nil) {
         self.coordinator = coordinator
-        self._tranisitionContext = StateObject(wrappedValue: .init(route: route, delegate: coordinator, isRoot: isRoot, prevTransitionContext: prevTransitionContext))
+        self._tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, isRoot: isRoot, prevTransitionContext: prevTransitionContext))
     }
 }
