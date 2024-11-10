@@ -10,7 +10,6 @@ import Foundation
 protocol TransitionContext: ObservableObject, Router where RouteType == CoordinatorType.RouteType {
 
     associatedtype CoordinatorType: Coordinator
-//    associatedtype TransitionContextType: TransitionContext
 
     var rootRoute: RouteType { get set }
     var fullScreenRoute: RouteType? { get set }
@@ -19,5 +18,8 @@ protocol TransitionContext: ObservableObject, Router where RouteType == Coordina
     var prevTransitionContext: Self? { get }
     var nextTransitionContext: Self? { get }
 
+    var onDeinit: (() -> Void)? { get set }
+
     init(rootRoute: RouteType, delegate: CoordinatorType?, isRoot: Bool, prevTransitionContext: Self?)
+    func getRootContext() -> Self?
 }

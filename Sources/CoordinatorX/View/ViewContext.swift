@@ -9,10 +9,7 @@ import SwiftUI
 
 public struct ViewContext<RouteType: Route,
                           CoordinatorType: ViewCoordinator>: Context where CoordinatorType.RouteType == RouteType {
-
-    @State
-    private var content: CoordinatorType.Content?
-
+    
     @StateObject
     public var tranisitionContext: ViewTransitionContext<RouteType, CoordinatorType>
 

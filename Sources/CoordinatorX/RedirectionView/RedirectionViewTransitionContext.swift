@@ -8,7 +8,8 @@
 import Combine
 import Foundation
 
-final class RedirectionViewTransitionContext<RouteType: Route, CoordinatorType: RedirectionCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
+final class RedirectionViewTransitionContext<RouteType: Route,
+                                             CoordinatorType: RedirectionCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
 
     @Published
     public var rootRoute: RouteType
@@ -22,7 +23,8 @@ final class RedirectionViewTransitionContext<RouteType: Route, CoordinatorType: 
     @Published
     public var sheetRoute: RouteType?
 
-    public var dismissFlow = PassthroughSubject<Void, Never>()
+    var dismissFlow = PassthroughSubject<Void, Never>()
+    nonisolated(unsafe) var onDeinit: (() -> Void)?
 
     weak var prevTransitionContext: RedirectionViewTransitionContext?
     weak var nextTransitionContext: RedirectionViewTransitionContext?
@@ -42,36 +44,30 @@ final class RedirectionViewTransitionContext<RouteType: Route, CoordinatorType: 
     }
 
     deinit {
+        onDeinit?()
     }
 
     public func trigger(_ route: RouteType) {
         guard let transition = delegate?.prepareTransition(for: route) else { return }
-        contextTrigger(route: route, transition: transition, delegate: delegate, parentRouter: delegate?.parentRouter)
+        handleTrigger(route: route, transition: transition, delegate: delegate, parentRouter: delegate?.parentRouter)
     }
 
-    private func contextTrigger(route: RouteType,
-                                transition: CoordinatorType.TransitionType,
-                                delegate: CoordinatorType?,
-                                parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
+    private func handleTrigger(route: RouteType,
+                               transition: CoordinatorType.TransitionType,
+                               delegate: CoordinatorType?,
+                               parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
         switch transition {
         case .dismiss: dismiss()
         case .dismissToRoot: dismissToRoot()
-        case .fullScreen: self.fullScreenRoute = route
-        case let .multiple(value):
-            value.forEach { value in
-                self.contextTrigger(route: route, transition: value, delegate: delegate, parentRouter: parentRouter)
-            }
+        case .fullScreen: setFullScreenRoute(route)
+        case .multiple(let values): handleMultipleTransitions(route, values)
         case .none: break
-        case .overlay: self.overlayRoute = route
-        case .parent(let parentRoute): break; // parentRouter?.parentRouter?.trigger(parentRoute)
-        case .root: self.getRootContext()?.rootRoute = route
-        case .set: self.rootRoute = route
-        case .sheet: self.sheetRoute = route
+        case .overlay: setOverlayRoute(route)
+        case .parent(let parentRoute): handleParent(route: parentRoute, parentRouter: parentRouter)
+        case .root: setRootRoute(route)
+        case .set: setRoute(route)
+        case .sheet: setSheetRoute(route)
         }
-    }
-
-    private func getRootContext() -> RedirectionViewTransitionContext<RouteType, CoordinatorType>? {
-        isRoot ? self : prevTransitionContext?.getRootContext()
     }
 
     private func dismiss() {
@@ -90,10 +86,18 @@ final class RedirectionViewTransitionContext<RouteType: Route, CoordinatorType: 
         context.overlayRoute = nil
         context.fullScreenRoute = nil
     }
-}
 
-extension Router where Self: TransitionContext {
-    var parentRouter: (any Router<RouteType>)? {
-        return prevTransitionContext
+    func getRootContext() -> RedirectionViewTransitionContext<RouteType, CoordinatorType>? {
+        isRoot ? self : prevTransitionContext?.getRootContext()
+    }
+
+    private func handleMultipleTransitions(_ route: RouteType, _ values: [RedirectionViewTransitionType<CoordinatorType.ParentRouteType>]) {
+        values.forEach { value in
+            handleTrigger(route: route, transition: value, delegate: delegate, parentRouter: delegate?.parentRouter)
+        }
+    }
+
+    private func handleParent(route: CoordinatorType.ParentRouteType, parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
+        parentRouter?.parentRouter?.trigger(route)
     }
 }
