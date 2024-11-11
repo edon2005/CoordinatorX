@@ -16,11 +16,11 @@ public struct NavigationContext<RouteType: Route,
     private let coordinator: CoordinatorType
 
     public var body: some View {
-        NavigationStack {
+        NavigationStack(path: $tranisitionContext.path) {
             coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
-        }
-        .navigationDestination(for: RouteType.self) { route in
-            NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+                .navigationDestination(for: RouteType.self) { route in
+                    NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+                }
         }
         .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
             NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
