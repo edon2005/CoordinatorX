@@ -20,6 +20,6 @@ protocol TransitionContext: ObservableObject, Router where RouteType == Coordina
 
     var onDeinit: (() -> Void)? { get set }
 
-    init(rootRoute: RouteType, delegate: CoordinatorType?, isRoot: Bool, prevTransitionContext: Self?)
+    init(rootRoute: RouteType, delegate: CoordinatorType?, prevTransitionContext: Self?)
     func getRootContext() -> Self?
 }

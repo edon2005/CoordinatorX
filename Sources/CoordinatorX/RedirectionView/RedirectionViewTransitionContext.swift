@@ -10,7 +10,7 @@ import Foundation
 
 final class RedirectionViewTransitionContext<RouteType: Route,
                                              CoordinatorType: RedirectionCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
-
+    
     @Published
     public var rootRoute: RouteType
 
@@ -34,12 +34,11 @@ final class RedirectionViewTransitionContext<RouteType: Route,
 
     required public init(rootRoute: RouteType,
                          delegate: CoordinatorType?,
-                         isRoot: Bool = false,
                          prevTransitionContext: RedirectionViewTransitionContext? = nil) {
         self.rootRoute = rootRoute
         self.delegate = delegate
         self.prevTransitionContext = prevTransitionContext
-        self.isRoot = isRoot
+        self.isRoot = prevTransitionContext == nil
         self.prevTransitionContext?.nextTransitionContext = self
     }
 
@@ -85,10 +84,6 @@ final class RedirectionViewTransitionContext<RouteType: Route,
         context.sheetRoute = nil
         context.overlayRoute = nil
         context.fullScreenRoute = nil
-    }
-
-    func getRootContext() -> RedirectionViewTransitionContext<RouteType, CoordinatorType>? {
-        isRoot ? self : prevTransitionContext?.getRootContext()
     }
 
     private func handleMultipleTransitions(_ route: RouteType, _ values: [RedirectionViewTransitionType<CoordinatorType.ParentRouteType>]) {

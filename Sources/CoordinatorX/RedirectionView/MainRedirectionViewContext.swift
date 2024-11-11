@@ -13,6 +13,6 @@ public struct MainRedirectionViewContext<CoordinatorType: RedirectionCoordinator
 
 public extension MainRedirectionViewContext {
     var body: some View {
-        RedirectionViewContext(rootRoute: coordinator.initialRoute, coordinator: coordinator, isRoot: true)
+        RedirectionViewContext(rootRoute: coordinator.initialRoute, coordinator: coordinator)
     }
 }

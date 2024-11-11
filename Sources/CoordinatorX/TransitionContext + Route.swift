@@ -6,6 +6,11 @@
 //
 
 extension TransitionContext {
+
+    func getRootContext() -> Self? {
+        self.prevTransitionContext == nil ? self : prevTransitionContext?.getRootContext()
+    }
+
     func setFullScreenRoute(_ route: RouteType) {
         let onDeinit: () -> Void = {
             Task {

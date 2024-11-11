@@ -43,9 +43,9 @@ public struct RedirectionViewContext<RouteType: Route,
                 }
     }
 
-    init(rootRoute: RouteType, coordinator: CoordinatorType, isRoot: Bool = false, prevTransitionContext: RedirectionViewTransitionContext<RouteType, CoordinatorType>? = nil) {
+    init(rootRoute: RouteType, coordinator: CoordinatorType, prevTransitionContext: RedirectionViewTransitionContext<RouteType, CoordinatorType>? = nil) {
         self.coordinator = coordinator
-        _tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, isRoot: isRoot, prevTransitionContext: prevTransitionContext))
+        _tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, prevTransitionContext: prevTransitionContext))
         self.rootRoute = rootRoute
     }
 }

@@ -1,13 +1,13 @@
 //
-//  ViewTransitionContext.swift
+//  NavigationViewTransitionContext.swift
 //  CoordinatorX
 //
-//  Created by Yevhen Don on 15/10/2024.
+//  Created by Yevhen Don on 11/11/2024.
 //
 
 import Foundation
 
-public final class ViewTransitionContext<RouteType: Route, CoordinatorType: ViewCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
+public final class NavigationViewTransitionContext<RouteType: Route, CoordinatorType: NavigationCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
 
     @Published
     var rootRoute: RouteType
@@ -24,17 +24,26 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
     weak var delegate: CoordinatorType?
-    weak var nextTransitionContext: ViewTransitionContext?
-    weak var prevTransitionContext: ViewTransitionContext?
+    weak var nextTransitionContext: NavigationViewTransitionContext?
+    weak var prevTransitionContext: NavigationViewTransitionContext?
+    weak var rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?
 
     private var isRoot: Bool
 
-    required init(rootRoute: RouteType, delegate: CoordinatorType?, prevTransitionContext: ViewTransitionContext? = nil) {
+    required init(rootRoute: RouteType, delegate: CoordinatorType?, prevTransitionContext: NavigationViewTransitionContext<RouteType, CoordinatorType>?) {
         self.rootRoute = rootRoute
         self.delegate = delegate
         self.prevTransitionContext = prevTransitionContext
         self.isRoot = prevTransitionContext == nil
         self.prevTransitionContext?.nextTransitionContext = self
+    }
+
+    convenience init(rootRoute: RouteType,
+                     delegate: CoordinatorType?,
+                     prevTransitionContext: NavigationViewTransitionContext? = nil,
+                     rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?) {
+        self.init(rootRoute: rootRoute, delegate: delegate, prevTransitionContext: prevTransitionContext)
+        self.rootTransitionContext = rootTransitionContext
     }
 
     deinit {
@@ -52,7 +61,11 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
         prevTransitionContext?.fullScreenRoute = nil
     }
 
-    private func handleMultipleTransitions(_ route: RouteType, _ values: [ViewTransitionType]) {
+    func getRootContext() -> NavigationViewTransitionContext<RouteType, CoordinatorType>? {
+        isRoot ? self : prevTransitionContext?.getRootContext()
+    }
+
+    private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransitionType]) {
         values.forEach { value in
             handleTransition(route: route, transition: value, delegate: delegate)
         }
@@ -67,9 +80,24 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
         case .multiple(let values): handleMultipleTransitions(route, values)
         case .none: break
         case .overlay: setOverlayRoute(route)
+        case .pop: handlePop()
+        case .popToRoot: handlePopToRoot()
+        case .push: handlePush(route)
         case .root: setRootRoute(route)
         case .set: setRoute(route)
         case .sheet: setSheetRoute(route)
         }
+    }
+
+    private func handlePop() {
+        rootTransitionContext?.handlePop()
+    }
+
+    private func handlePopToRoot() {
+        rootTransitionContext?.handlePopToRoot()
+    }
+
+    private func handlePush(_ route: RouteType) {
+        rootTransitionContext?.handlePush(route)
     }
 }

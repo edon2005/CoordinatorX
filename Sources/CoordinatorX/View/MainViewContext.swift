@@ -13,6 +13,6 @@ public struct MainViewContext<CoordinatorType: ViewCoordinator>: View {
 
 public extension MainViewContext {
     var body: some View {
-        ViewContext(rootRoute: coordinator.initialRoute, coordinator: coordinator, isRoot: true)
+        ViewContext(rootRoute: coordinator.initialRoute, coordinator: coordinator)
     }
 }

@@ -9,7 +9,6 @@ import Foundation
 
 public final class NavigationTransitionContext<RouteType: Route,
                                                CoordinatorType: NavigationCoordinator>: TransitionContext where RouteType == CoordinatorType.RouteType {
-
     @Published
     var rootRoute: RouteType
 
@@ -33,11 +32,11 @@ public final class NavigationTransitionContext<RouteType: Route,
 
     private var isRoot: Bool
 
-    required init(rootRoute: RouteType, delegate: CoordinatorType?, isRoot: Bool = false, prevTransitionContext: NavigationTransitionContext? = nil) {
+    required init(rootRoute: RouteType, delegate: CoordinatorType?, prevTransitionContext: NavigationTransitionContext? = nil) {
         self.rootRoute = rootRoute
         self.delegate = delegate
         self.prevTransitionContext = prevTransitionContext
-        self.isRoot = isRoot
+        self.isRoot = prevTransitionContext == nil
         self.prevTransitionContext?.nextTransitionContext = self
     }
 
@@ -56,27 +55,23 @@ public final class NavigationTransitionContext<RouteType: Route,
         prevTransitionContext?.fullScreenRoute = nil
     }
 
-    func getRootContext() -> NavigationTransitionContext<RouteType, CoordinatorType>? {
-        isRoot ? self : prevTransitionContext?.getRootContext()
-    }
-
     private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransitionType]) {
         values.forEach { value in
             handleTransition(route: route, transition: value)
         }
     }
 
-    private func handlePop() {
+    func handlePop() {
         guard path.isEmpty == false else { return }
         path.removeLast()
     }
 
-    private func handlePopToRoot() {
+    func handlePopToRoot() {
         guard path.isEmpty == false else { return }
         path.removeAll()
     }
 
-    private func handlePush(_ route: RouteType) {
+    func handlePush(_ route: RouteType) {
         path.append(route)
     }
 
