@@ -35,8 +35,8 @@ public struct NavigationContext<RouteType: Route,
         }
     }
 
-    public init(rootRoute: RouteType,
-                coordinator: CoordinatorType) {
+    init(rootRoute: RouteType,
+         coordinator: CoordinatorType) {
         self.coordinator = coordinator
         self._tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, prevTransitionContext: nil))
     }

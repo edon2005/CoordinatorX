@@ -30,9 +30,9 @@ public struct ViewContext<RouteType: Route,
             }
     }
 
-    public init(rootRoute: RouteType,
-                coordinator: CoordinatorType,
-                prevTransitionContext: ViewTransitionContext<RouteType, CoordinatorType>? = nil) {
+    init(rootRoute: RouteType,
+         coordinator: CoordinatorType,
+         prevTransitionContext: ViewTransitionContext<RouteType, CoordinatorType>? = nil) {
         self.coordinator = coordinator
         self._tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, prevTransitionContext: prevTransitionContext))
     }
