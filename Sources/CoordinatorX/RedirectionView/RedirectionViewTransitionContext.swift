@@ -27,8 +27,8 @@ final class RedirectionViewTransitionContext<RouteType: Route,
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
     var delegate: CoordinatorType?
-    var nextTransitionContext: RedirectionViewTransitionContext?
-    var prevTransitionContext: RedirectionViewTransitionContext?
+    weak var nextTransitionContext: RedirectionViewTransitionContext?
+    weak var prevTransitionContext: RedirectionViewTransitionContext?
 
     private var isRoot: Bool
 

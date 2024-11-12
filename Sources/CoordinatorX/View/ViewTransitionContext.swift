@@ -24,8 +24,8 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
     var delegate: CoordinatorType?
-    var nextTransitionContext: ViewTransitionContext?
-    var prevTransitionContext: ViewTransitionContext?
+    weak var nextTransitionContext: ViewTransitionContext?
+    weak var prevTransitionContext: ViewTransitionContext?
 
     private var isRoot: Bool
 

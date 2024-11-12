@@ -24,9 +24,9 @@ public final class NavigationViewTransitionContext<RouteType: Route, Coordinator
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
     var delegate: CoordinatorType?
-    var nextTransitionContext: NavigationViewTransitionContext?
-    var prevTransitionContext: NavigationViewTransitionContext?
-    var rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?
+    weak var nextTransitionContext: NavigationViewTransitionContext?
+    weak var prevTransitionContext: NavigationViewTransitionContext?
+    weak var rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?
 
     private var isRoot: Bool
 
