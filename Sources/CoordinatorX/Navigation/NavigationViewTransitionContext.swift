@@ -23,10 +23,10 @@ public final class NavigationViewTransitionContext<RouteType: Route, Coordinator
 
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
-    weak var delegate: CoordinatorType?
-    weak var nextTransitionContext: NavigationViewTransitionContext?
-    weak var prevTransitionContext: NavigationViewTransitionContext?
-    weak var rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?
+    var delegate: CoordinatorType?
+    var nextTransitionContext: NavigationViewTransitionContext?
+    var prevTransitionContext: NavigationViewTransitionContext?
+    var rootTransitionContext: NavigationTransitionContext<RouteType, CoordinatorType>?
 
     private var isRoot: Bool
 
@@ -65,7 +65,7 @@ public final class NavigationViewTransitionContext<RouteType: Route, Coordinator
         isRoot ? self : prevTransitionContext?.getRootContext()
     }
 
-    private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransitionType]) {
+    private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransition]) {
         values.forEach { value in
             handleTransition(route: route, transition: value, delegate: delegate)
         }

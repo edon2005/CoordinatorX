@@ -1,11 +1,11 @@
 //
-//  NavigationTransitionType.swift
+//  NavigationTransition.swift
 //  CoordinatorX
 //
 //  Created by Yevhen Don on 11/11/2024.
 //
 
-public enum NavigationTransitionType: TransitionTypeProtocol, Equatable {
+public enum NavigationTransition: TransitionTypeProtocol, Equatable {
 
     case dismiss
     case fullScreen

@@ -23,9 +23,9 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
 
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
-    weak var delegate: CoordinatorType?
-    weak var nextTransitionContext: ViewTransitionContext?
-    weak var prevTransitionContext: ViewTransitionContext?
+    var delegate: CoordinatorType?
+    var nextTransitionContext: ViewTransitionContext?
+    var prevTransitionContext: ViewTransitionContext?
 
     private var isRoot: Bool
 
@@ -52,7 +52,7 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
         prevTransitionContext?.fullScreenRoute = nil
     }
 
-    private func handleMultipleTransitions(_ route: RouteType, _ values: [ViewTransitionType]) {
+    private func handleMultipleTransitions(_ route: RouteType, _ values: [ViewTransition]) {
         values.forEach { value in
             handleTransition(route: route, transition: value, delegate: delegate)
         }

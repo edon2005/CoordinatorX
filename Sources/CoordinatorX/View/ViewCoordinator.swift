@@ -7,4 +7,4 @@
 
 import Foundation
 
-public protocol ViewCoordinator: Coordinator where TransitionType == ViewTransitionType {}
+public protocol ViewCoordinator: Coordinator where TransitionType == ViewTransition {}

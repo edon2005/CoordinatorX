@@ -26,9 +26,9 @@ public final class NavigationTransitionContext<RouteType: Route,
 
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
-    weak var delegate: CoordinatorType?
-    weak var nextTransitionContext: NavigationTransitionContext?
-    weak var prevTransitionContext: NavigationTransitionContext?
+    var delegate: CoordinatorType?
+    var nextTransitionContext: NavigationTransitionContext?
+    var prevTransitionContext: NavigationTransitionContext?
 
     private var isRoot: Bool
 
@@ -55,7 +55,7 @@ public final class NavigationTransitionContext<RouteType: Route,
         prevTransitionContext?.fullScreenRoute = nil
     }
 
-    private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransitionType]) {
+    private func handleMultipleTransitions(_ route: RouteType, _ values: [NavigationTransition]) {
         values.forEach { value in
             handleTransition(route: route, transition: value)
         }
@@ -75,7 +75,7 @@ public final class NavigationTransitionContext<RouteType: Route,
         path.append(route)
     }
 
-    private func handleTransition(route: RouteType, transition: NavigationTransitionType) {
+    private func handleTransition(route: RouteType, transition: NavigationTransition) {
         switch transition {
         case .dismiss: dismiss()
         case .fullScreen: setFullScreenRoute(route)

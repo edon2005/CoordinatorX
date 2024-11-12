@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RedirectionCoordinator: Coordinator where TransitionType == RedirectionViewTransitionType<ParentRouteType>  {
+public protocol RedirectionCoordinator: Coordinator where TransitionType == RedirectionViewTransition<ParentRouteType>  {
     associatedtype ParentRouteType: Route
 
     var parentRouter: (any Router<ParentRouteType>) { get }

@@ -26,9 +26,9 @@ final class RedirectionViewTransitionContext<RouteType: Route,
     var dismissFlow = PassthroughSubject<Void, Never>()
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
-    weak var prevTransitionContext: RedirectionViewTransitionContext?
-    weak var nextTransitionContext: RedirectionViewTransitionContext?
-    weak var delegate: CoordinatorType?
+    var delegate: CoordinatorType?
+    var nextTransitionContext: RedirectionViewTransitionContext?
+    var prevTransitionContext: RedirectionViewTransitionContext?
 
     private var isRoot: Bool
 
@@ -61,15 +61,33 @@ final class RedirectionViewTransitionContext<RouteType: Route,
         }
     }
 
-    private func dismissToRoot() {
-        guard let context = getRootContext() else { return }
-        context.sheetRoute = nil
-        context.overlayRoute = nil
-        context.fullScreenRoute = nil
+    @discardableResult
+    private func dismissToRoot() -> Int {
+        var result = 0
+        if #available(iOS 16.4, *) {
+            guard let context = getRootContext() else { return result }
+            context.sheetRoute = nil
+            context.overlayRoute = nil
+            context.fullScreenRoute = nil
+        } else {
+            var context = self.prevTransitionContext
+            var count = 0
+            while context != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(count * 350)) { [context] in
+                    context?.sheetRoute = nil
+                    context?.overlayRoute = nil
+                    context?.fullScreenRoute = nil
+                }
+                count += 1
+                context = context?.prevTransitionContext
+            }
+            result = count
+        }
+        return result
     }
 
     private func handleMultipleTransitions(route: RouteType,
-                                           transitions values: [RedirectionViewTransitionType<CoordinatorType.ParentRouteType>],
+                                           transitions values: [RedirectionViewTransition<CoordinatorType.ParentRouteType>],
                                            delegate: CoordinatorType?,
                                            parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
         values.forEach { value in
@@ -78,7 +96,14 @@ final class RedirectionViewTransitionContext<RouteType: Route,
     }
 
     private func handleParent(route: CoordinatorType.ParentRouteType, parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
-        parentRouter?.parentRouter?.trigger(route)
+        if #available(iOS 16.4, *) {
+            parentRouter?.parentRouter?.trigger(route)
+        } else {
+            let count = dismissToRoot()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(count * 400)) {
+                parentRouter?.parentRouter?.trigger(route)
+            }
+        }
     }
 
     private func handleTransition(route: RouteType,

@@ -10,8 +10,8 @@ import SwiftUI
 public struct RedirectionViewContext<RouteType: Route,
                                      CoordinatorType: RedirectionCoordinator>: Context where CoordinatorType.RouteType == RouteType {
 
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @Environment(\.dismiss)
+    private var dismiss
 
     @StateObject
     var tranisitionContext: RedirectionViewTransitionContext<RouteType, CoordinatorType>
@@ -33,7 +33,7 @@ public struct RedirectionViewContext<RouteType: Route,
                 Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
             }
             .onReceive(tranisitionContext.dismissFlow) { _ in
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }
     }
 
