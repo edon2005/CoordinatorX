@@ -9,7 +9,7 @@ The start contains 3 main steps. As simple as only possible.
 You need to create an enum for steps in a particular flow.
 
 ```swift
-enum AppRoute: Route, Equatable {
+enum AppRoute: Route {
     case splash
     case onboarding
     case login
@@ -20,6 +20,7 @@ enum AppRoute: Route, Equatable {
 ### Step 2️⃣
 
 Create Coordinator class for handling steps.
+
 
 ```swift
 final class AppCoordinator: ViewCoordinator {
@@ -37,6 +38,10 @@ final class AppCoordinator: ViewCoordinator {
         case .onboarding: .fullScreen
         case .login: .sheet
         case .home: .multiple(.root, .dismiss)
+        .
+        .
+        .
+        .
         }
     }
 
@@ -52,13 +57,10 @@ final class AppCoordinator: ViewCoordinator {
             let coordinator = OnboardingCoordinator(initialRoute: .screen1, parentRouter: router)
             OnboardingFlow(coordinator: coordinator)
 
-        case .login:
-            let viewModel = TemplateViewModel(color: .green, nextStep: .home, router: router)
-            TemplateView(viewModel: viewModel)
-
-        case .home:
-            let coordinator = HomeCoordinator(initialRoute: .screen1)
-            HomeFlow(coordinator: coordinator)
+        .
+        .
+        .
+        .
         }
     }
 }
@@ -74,7 +76,7 @@ struct AppFlow: DefaultViewFlow {
 }
 ```
 
-### Final
+### Using CoordinatorX from App
 
 Just set it up in your App file:
 
@@ -91,6 +93,38 @@ struct CoordinatorX_ExampleApp: App {
     }
 }
 ```
+
+## Important details
+
+### What is Coordinator protocol
+
+Mainly Coordinator protocol contains:\
+**var initialRoute: Route** from which route Flow should be started.
+
+**func prepareTransition(for route: RouteType) -> TransitionType** notify Coordinator in which way the view should be appeared.
+
+**func prepareView(for route: RouteType, router: any Router<RouteType>) -> some View** prepare View to be showed.
+ 
+There are 3 types of Coordinators prepared for your app: `ViewCoordinator`, `RedirectionViewCoordinator`, `NavigationCoordinator`.
+
+### ViewCoordinator
+Main Coordinator to present a single root `View` and the root `View` can be covered with `sheet`, `fullscreen`, `overlay` or replaced by another `View`.\
+`ViewCoordinator` supports next `Transition` types:
+```swift
+    case dismiss
+    case fullScreen
+    case multiple([Self])
+    case none
+    case overlay
+    case root
+    case set
+    case sheet
+```
+ 
+
+### RedirectionViewCoordinator
+
+### NavigationCoordinator
  
 ## Last but not least 
 
