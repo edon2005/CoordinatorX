@@ -11,6 +11,7 @@ extension TransitionContext {
         self.prevTransitionContext == nil ? self : prevTransitionContext?.getRootContext()
     }
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     func setFullScreenRoute(_ route: RouteType) {
         let onDeinit: () -> Void = {
             Task {
@@ -28,6 +29,7 @@ extension TransitionContext {
             self.fullScreenRoute = route
         }
     }
+#endif
 
     func setOverlayRoute(_ route: RouteType) {
         overlayRoute = route
@@ -48,6 +50,7 @@ extension TransitionContext {
             }
         }
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         if fullScreenRoute != nil {
             nextTransitionContext?.onDeinit = onDeinit
             fullScreenRoute = nil
@@ -57,5 +60,13 @@ extension TransitionContext {
         } else {
             self.sheetRoute = route
         }
+#else
+        if self.sheetRoute != nil  {
+            nextTransitionContext?.onDeinit = onDeinit
+            self.sheetRoute = nil
+        } else {
+            self.sheetRoute = route
+        }
+#endif
     }
 }

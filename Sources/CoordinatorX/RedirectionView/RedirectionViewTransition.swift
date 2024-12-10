@@ -11,7 +11,9 @@ public enum RedirectionViewTransition<ParentRouteType: Route>: TransitionTypePro
 
     case dismiss
     case dismissToRoot
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     case fullScreen
+#endif
     case multiple([Self])
     case none
     case overlay

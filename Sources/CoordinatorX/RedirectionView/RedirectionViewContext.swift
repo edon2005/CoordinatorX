@@ -18,42 +18,26 @@ public struct RedirectionViewContext<RouteType: Route,
 
     private let coordinator: CoordinatorType
 
-#if os(iOS)
     public var body: some View {
         coordinator
             .prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
             .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
                 Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
             }
-            .overlay {
-                if let route = tranisitionContext.overlayRoute {
-                    Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
-                }
-            }
-            .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
-            }
-            .onReceive(tranisitionContext.dismissFlow) { _ in
-                dismiss()
-            }
-    }
-#elseif os(macOS)
-    public var body: some View {
-        coordinator
-            .prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
-            .overlay {
-                if let route = tranisitionContext.overlayRoute {
-                    Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
-                }
-            }
-            .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
-            }
-            .onReceive(tranisitionContext.dismissFlow) { _ in
-                dismiss()
-            }
-    }
 #endif
+            .overlay {
+                if let route = tranisitionContext.overlayRoute {
+                    Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                }
+            }
+            .sheet(item: $tranisitionContext.sheetRoute) { route in
+                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+            }
+            .onReceive(tranisitionContext.dismissFlow) { _ in
+                dismiss()
+            }
+    }
 
     init(rootRoute: RouteType,
          coordinator: CoordinatorType,

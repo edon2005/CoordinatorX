@@ -14,8 +14,10 @@ final class RedirectionViewTransitionContext<RouteType: Route,
     @Published
     public var rootRoute: RouteType
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     @Published
     public var fullScreenRoute: RouteType?
+#endif
 
     @Published
     public var overlayRoute: RouteType?
@@ -57,7 +59,9 @@ final class RedirectionViewTransitionContext<RouteType: Route,
         } else {
             prevTransitionContext?.sheetRoute = nil
             prevTransitionContext?.overlayRoute = nil
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
             prevTransitionContext?.fullScreenRoute = nil
+#endif
         }
     }
 
@@ -68,7 +72,9 @@ final class RedirectionViewTransitionContext<RouteType: Route,
             guard let context = getRootContext() else { return result }
             context.sheetRoute = nil
             context.overlayRoute = nil
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
             context.fullScreenRoute = nil
+#endif
         } else {
             var context = self.prevTransitionContext
             var count = 0
@@ -76,7 +82,9 @@ final class RedirectionViewTransitionContext<RouteType: Route,
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(count * 350)) { [context] in
                     context?.sheetRoute = nil
                     context?.overlayRoute = nil
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
                     context?.fullScreenRoute = nil
+#endif
                 }
                 count += 1
                 context = context?.prevTransitionContext
@@ -113,7 +121,9 @@ final class RedirectionViewTransitionContext<RouteType: Route,
         switch transition {
         case .dismiss: dismiss()
         case .dismissToRoot: dismissToRoot()
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         case .fullScreen: setFullScreenRoute(route)
+#endif
         case .multiple(let values): handleMultipleTransitions(route: route, transitions: values, delegate: delegate, parentRouter: parentRouter)
         case .none: break
         case .overlay: setOverlayRoute(route)

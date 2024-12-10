@@ -15,49 +15,31 @@ public struct NavigationViewContext<RouteType: Route,
 
     private let coordinator: CoordinatorType
 
-#if os(iOS)
     public var body: some View {
         coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
             .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
                 Self(rootRoute: route,
                      coordinator: coordinator,
                      prevTransitionContext: tranisitionContext,
                      rootTransitionContext: tranisitionContext.rootTransitionContext)
             }
-            .overlay {
-                if let route = tranisitionContext.overlayRoute {
-                    Self(rootRoute: route,
-                         coordinator: coordinator,
-                         prevTransitionContext: tranisitionContext,
-                         rootTransitionContext: tranisitionContext.rootTransitionContext)
-                }
-            }
-            .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(rootRoute: route,
-                     coordinator: coordinator,
-                     prevTransitionContext: tranisitionContext,
-                     rootTransitionContext: tranisitionContext.rootTransitionContext)
-            }
-    }
-#elseif os(macOS)
-    public var body: some View {
-        coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
-            .overlay {
-                if let route = tranisitionContext.overlayRoute {
-                    Self(rootRoute: route,
-                         coordinator: coordinator,
-                         prevTransitionContext: tranisitionContext,
-                         rootTransitionContext: tranisitionContext.rootTransitionContext)
-                }
-            }
-            .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(rootRoute: route,
-                     coordinator: coordinator,
-                     prevTransitionContext: tranisitionContext,
-                     rootTransitionContext: tranisitionContext.rootTransitionContext)
-            }
-    }
 #endif
+            .overlay {
+                if let route = tranisitionContext.overlayRoute {
+                    Self(rootRoute: route,
+                         coordinator: coordinator,
+                         prevTransitionContext: tranisitionContext,
+                         rootTransitionContext: tranisitionContext.rootTransitionContext)
+                }
+            }
+            .sheet(item: $tranisitionContext.sheetRoute) { route in
+                Self(rootRoute: route,
+                     coordinator: coordinator,
+                     prevTransitionContext: tranisitionContext,
+                     rootTransitionContext: tranisitionContext.rootTransitionContext)
+            }
+    }
 
     public init(rootRoute: RouteType,
                 coordinator: CoordinatorType,

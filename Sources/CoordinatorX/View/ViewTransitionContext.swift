@@ -12,8 +12,10 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
     @Published
     var rootRoute: RouteType
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     @Published
     var fullScreenRoute: RouteType?
+#endif
 
     @Published
     var overlayRoute: RouteType?
@@ -49,7 +51,9 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
     private func dismiss() {
         prevTransitionContext?.sheetRoute = nil
         prevTransitionContext?.overlayRoute = nil
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         prevTransitionContext?.fullScreenRoute = nil
+#endif
     }
 
     private func handleMultipleTransitions(_ route: RouteType, _ values: [ViewTransition]) {
@@ -63,7 +67,9 @@ public final class ViewTransitionContext<RouteType: Route, CoordinatorType: View
                                   delegate: CoordinatorType?) {
         switch transition {
         case .dismiss: dismiss()
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         case .fullScreen: setFullScreenRoute(route)
+#endif
         case .multiple(let values): handleMultipleTransitions(route, values)
         case .none: break
         case .overlay: setOverlayRoute(route)

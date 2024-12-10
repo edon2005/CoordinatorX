@@ -12,7 +12,9 @@ protocol TransitionContext: ObservableObject, Router where RouteType == Coordina
     associatedtype CoordinatorType: Coordinator
 
     var rootRoute: RouteType { get set }
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     var fullScreenRoute: RouteType? { get set }
+#endif
     var overlayRoute: RouteType? { get set }
     var sheetRoute: RouteType? { get set }
     var prevTransitionContext: Self? { get }
