@@ -17,7 +17,7 @@
 ![Static Badge](https://img.shields.io/badge/macOS-13.0-FF0000)
 ![Static Badge](https://img.shields.io/badge/swift_6-ready-green)
 ![Static Badge](https://img.shields.io/badge/UI-SwiftUI-green)
-![Static Badge](https://img.shields.io/badge/Swift_Package_Manager-ready-green)
+![Static Badge](https://img.shields.io/badge/SPM-ready-green)
 ![Static Badge](https://img.shields.io/badge/demo-In_progress-0000FF)
 <br/>
 <br/>
