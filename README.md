@@ -12,14 +12,13 @@
 <div align="center">
 
 [![GitHub Release](https://img.shields.io/github/release/edon2005/coordinatorx.svg)](https://github.com/edon2005/coordinatorx/releases)
-![Static Badge](https://img.shields.io/badge/platform-iOS_|_macOS-lightgrey)
-![Static Badge](https://img.shields.io/badge/iOS-16.0-FF0000)
-![Static Badge](https://img.shields.io/badge/macOS-13.0-FF0000)
 ![Static Badge](https://img.shields.io/badge/swift_6-ready-green)
 ![Static Badge](https://img.shields.io/badge/UI-SwiftUI-green)
 ![Static Badge](https://img.shields.io/badge/SPM-ready-green)
 ![Static Badge](https://img.shields.io/badge/demo-In_progress-0000FF)
 <br/>
+![Static Badge](https://img.shields.io/badge/iOS-16.0-FF0000)
+![Static Badge](https://img.shields.io/badge/macOS-13.0-FF0000)
 <br/>
 <br/>
 <br/>
