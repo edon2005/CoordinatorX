@@ -15,6 +15,7 @@ public struct NavigationViewContext<RouteType: Route,
 
     private let coordinator: CoordinatorType
 
+#if os(iOS)
     public var body: some View {
         coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
             .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
@@ -38,6 +39,25 @@ public struct NavigationViewContext<RouteType: Route,
                      rootTransitionContext: tranisitionContext.rootTransitionContext)
             }
     }
+#elseif os(macOS)
+    public var body: some View {
+        coordinator.prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
+            .overlay {
+                if let route = tranisitionContext.overlayRoute {
+                    Self(rootRoute: route,
+                         coordinator: coordinator,
+                         prevTransitionContext: tranisitionContext,
+                         rootTransitionContext: tranisitionContext.rootTransitionContext)
+                }
+            }
+            .sheet(item: $tranisitionContext.sheetRoute) { route in
+                Self(rootRoute: route,
+                     coordinator: coordinator,
+                     prevTransitionContext: tranisitionContext,
+                     rootTransitionContext: tranisitionContext.rootTransitionContext)
+            }
+    }
+#endif
 
     public init(rootRoute: RouteType,
                 coordinator: CoordinatorType,
