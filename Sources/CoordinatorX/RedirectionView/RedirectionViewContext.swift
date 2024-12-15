@@ -22,21 +22,34 @@ public struct RedirectionViewContext<RouteType: Route,
         coordinator
             .prepareView(for: tranisitionContext.rootRoute, router: tranisitionContext)
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-            .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
-                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+            .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { transition in
+                ZStack {
+                    Self(rootRoute: transition.route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                }
+                .background(transition.backgroundColor)
+                .transition(transition.style)
             }
 #endif
             .overlay {
-                if let route = tranisitionContext.overlayRoute {
-                    Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                if let transition = tranisitionContext.overlayRoute {
+                    ZStack {
+                        Self(rootRoute: transition.route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                    }
+                    .background(transition.backgroundColor)
+                    .transition(transition.style)
                 }
             }
-            .sheet(item: $tranisitionContext.sheetRoute) { route in
-                Self(rootRoute: route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+            .sheet(item: $tranisitionContext.sheetRoute) { transition in
+                ZStack {
+                    Self(rootRoute: transition.route, coordinator: coordinator, prevTransitionContext: tranisitionContext)
+                }
+                .background(transition.backgroundColor)
+                .transition(transition.style)
             }
             .onReceive(tranisitionContext.dismissFlow) { _ in
                 dismiss()
             }
+            .background(coordinator.backgroundColor)
     }
 
     init(rootRoute: RouteType,

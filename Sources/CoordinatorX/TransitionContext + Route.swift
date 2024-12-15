@@ -5,6 +5,8 @@
 //  Created by Yevhen Don on 11/11/2024.
 //
 
+import SwiftUI
+
 extension TransitionContext {
 
     func getRootContext() -> Self? {
@@ -12,10 +14,11 @@ extension TransitionContext {
     }
 
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-    func setFullScreenRoute(_ route: RouteType) {
+    func setFullScreenRoute(_ route: RouteType, options: [TransitionOptions]) {
+        let model = prepareTransitionModel(route: route, options: options)
         let onDeinit: () -> Void = {
             Task {
-                self.fullScreenRoute = route
+                self.fullScreenRoute = model
             }
         }
 
@@ -26,13 +29,14 @@ extension TransitionContext {
             nextTransitionContext?.onDeinit = onDeinit
             self.fullScreenRoute = nil
         } else {
-            self.fullScreenRoute = route
+            self.fullScreenRoute = model
         }
     }
 #endif
 
-    func setOverlayRoute(_ route: RouteType) {
-        overlayRoute = route
+    func setOverlayRoute(_ route: RouteType, options: [TransitionOptions]) {
+        let model = prepareTransitionModel(route: route, options: options)
+        overlayRoute = model
     }
 
     func setRootRoute(_ route: RouteType) {
@@ -43,10 +47,11 @@ extension TransitionContext {
         self.rootRoute = route
     }
 
-    func setSheetRoute(_ route: RouteType) {
+    func setSheetRoute(_ route: RouteType, options: [TransitionOptions]) {
+        let model = prepareTransitionModel(route: route, options: options)
         let onDeinit: () -> Void = {
             Task {
-                self.sheetRoute = route
+                self.sheetRoute = model
             }
         }
 
@@ -58,15 +63,27 @@ extension TransitionContext {
             nextTransitionContext?.onDeinit = onDeinit
             self.sheetRoute = nil
         } else {
-            self.sheetRoute = route
+            self.sheetRoute = model
         }
 #else
         if self.sheetRoute != nil  {
             nextTransitionContext?.onDeinit = onDeinit
             self.sheetRoute = nil
         } else {
-            self.sheetRoute = route
+            self.sheetRoute = model
         }
 #endif
+    }
+
+    func prepareTransitionModel(route: RouteType, options: [TransitionOptions]) -> Transition<RouteType> {
+        var backgroundColor: Color = .clear
+        var style: AnyTransition = .opacity
+        options.forEach {
+            switch $0 {
+            case .background(let color): backgroundColor = color
+            case .transition(let transition): style = transition
+            }
+        }
+        return .init(route: route, backgroundColor: backgroundColor, style: style)
     }
 }

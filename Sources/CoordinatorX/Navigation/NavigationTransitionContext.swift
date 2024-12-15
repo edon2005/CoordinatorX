@@ -14,14 +14,14 @@ public final class NavigationTransitionContext<RouteType: Route,
 
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     @Published
-    var fullScreenRoute: RouteType?
+    var fullScreenRoute: Transition<RouteType>?
 #endif
 
     @Published
-    var overlayRoute: RouteType?
+    var overlayRoute: Transition<RouteType>?
 
     @Published
-    var sheetRoute: RouteType?
+    var sheetRoute: Transition<RouteType>?
 
     @Published
     var path: [RouteType] = []
@@ -83,16 +83,16 @@ public final class NavigationTransitionContext<RouteType: Route,
         switch transition {
         case .dismiss: dismiss()
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-        case .fullScreen: setFullScreenRoute(route)
+        case .fullScreen(let options): setFullScreenRoute(route, options: options)
 #endif
         case .multiple(let values): handleMultipleTransitions(route, values)
         case .none: break
-        case .overlay: setOverlayRoute(route)
+        case .overlay(let options): setOverlayRoute(route, options: options)
         case .pop: handlePop()
         case .popToRoot: handlePopToRoot()
         case .root: setRootRoute(route)
         case .set: setRoute(route)
-        case .sheet: setSheetRoute(route)
+        case .sheet(let options): setSheetRoute(route, options: options)
         case .push: handlePush(route)
         }
     }

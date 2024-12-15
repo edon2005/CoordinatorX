@@ -16,14 +16,14 @@ final class RedirectionViewTransitionContext<RouteType: Route,
 
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
     @Published
-    public var fullScreenRoute: RouteType?
+    public var fullScreenRoute: Transition<RouteType>?
 #endif
 
     @Published
-    public var overlayRoute: RouteType?
+    public var overlayRoute: Transition<RouteType>?
 
     @Published
-    public var sheetRoute: RouteType?
+    var sheetRoute: Transition<RouteType>?
 
     var dismissFlow = PassthroughSubject<Void, Never>()
     nonisolated(unsafe) var onDeinit: (() -> Void)?
@@ -104,12 +104,13 @@ final class RedirectionViewTransitionContext<RouteType: Route,
     }
 
     private func handleParent(route: CoordinatorType.ParentRouteType, parentRouter: (any Router<CoordinatorType.ParentRouteType>)?) {
+        guard let parentRouter = parentRouter?.parentRouter ?? parentRouter else { return }
         if #available(iOS 16.4, *) {
-            parentRouter?.parentRouter?.trigger(route)
+            parentRouter.trigger(route)
         } else {
             let count = dismissToRoot()
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(count * 400)) {
-                parentRouter?.parentRouter?.trigger(route)
+                parentRouter.trigger(route)
             }
         }
     }
@@ -122,15 +123,15 @@ final class RedirectionViewTransitionContext<RouteType: Route,
         case .dismiss: dismiss()
         case .dismissToRoot: dismissToRoot()
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-        case .fullScreen: setFullScreenRoute(route)
+        case .fullScreen(let options): setFullScreenRoute(route, options: options)
 #endif
         case .multiple(let values): handleMultipleTransitions(route: route, transitions: values, delegate: delegate, parentRouter: parentRouter)
         case .none: break
-        case .overlay: setOverlayRoute(route)
+        case .overlay(let options): setOverlayRoute(route, options: options)
         case .parent(let parentRoute): handleParent(route: parentRoute, parentRouter: parentRouter)
         case .root: setRootRoute(route)
         case .set: setRoute(route)
-        case .sheet: setSheetRoute(route)
+        case .sheet(let options): setSheetRoute(route, options: options)
         }
     }
 }

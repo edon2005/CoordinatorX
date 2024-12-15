@@ -23,18 +23,31 @@ public struct NavigationContext<RouteType: Route,
                 }
         }
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-        .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { route in
-            NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+        .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { transition in
+            ZStack {
+                NavigationViewContext(rootRoute: transition.route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+            }
+            .background(transition.backgroundColor)
+            .transition(transition.style)
         }
 #endif
         .overlay {
-            if let route = tranisitionContext.overlayRoute {
-                NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+            if let transition = tranisitionContext.overlayRoute {
+                ZStack {
+                    NavigationViewContext(rootRoute: transition.route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+                }
+                .background(transition.backgroundColor)
+                .transition(transition.style)
             }
         }
-        .sheet(item: $tranisitionContext.sheetRoute) { route in
-            NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+        .sheet(item: $tranisitionContext.sheetRoute) { transition in
+            ZStack {
+                NavigationViewContext(rootRoute: transition.route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
+            }
+            .background(transition.backgroundColor)
+            .transition(transition.style)
         }
+        .background(coordinator.backgroundColor)
     }
 
     init(rootRoute: RouteType,

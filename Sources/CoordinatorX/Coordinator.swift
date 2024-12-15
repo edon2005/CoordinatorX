@@ -13,6 +13,7 @@ public protocol Coordinator: AnyObject {
     associatedtype RouteType: Route
     associatedtype TransitionType: TransitionTypeProtocol
 
+    var backgroundColor: Color { get }
     var initialRoute: RouteType { get set }
 
     @MainActor
@@ -20,5 +21,11 @@ public protocol Coordinator: AnyObject {
 
     @MainActor
     func prepareView(for route: RouteType, router: any Router<RouteType>) -> Content
+
+}
+
+extension Coordinator {
+
+    public var backgroundColor: Color { .clear }
 
 }
