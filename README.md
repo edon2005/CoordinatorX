@@ -113,9 +113,7 @@ struct CoordinatorX_ExampleApp: App {
 #### Swift Package Manager
 
 See [this WWDC presentation](https://developer.apple.com/videos/play/wwdc2019/408/) about more information how to adopt Swift packages in your app.
-
 Specify `https://github.com/edon2005/CoordinatorX.git` as the `CoordinatorX` package link. 
-
 <br/>
 
 #### Manually
