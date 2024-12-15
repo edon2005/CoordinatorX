@@ -19,6 +19,9 @@
 <br/>
 ![Static Badge](https://img.shields.io/badge/iOS-16.0-FF0000)
 ![Static Badge](https://img.shields.io/badge/macOS-13.0-FF0000)
+![Static Badge](https://img.shields.io/badge/tvOS-16.0-FF0000)
+![Static Badge](https://img.shields.io/badge/visionOS-1.0-FF0000)
+![Static Badge](https://img.shields.io/badge/watchOS-9.0-FF0000)
 <br/>
 <br/>
 <br/>
