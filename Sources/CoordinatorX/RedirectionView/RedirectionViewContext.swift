@@ -49,7 +49,6 @@ public struct RedirectionViewContext<RouteType: Route,
             .onReceive(tranisitionContext.dismissFlow) { _ in
                 dismiss()
             }
-            .background(coordinator.backgroundColor)
     }
 
     init(rootRoute: RouteType,

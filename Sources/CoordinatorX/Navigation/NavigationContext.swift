@@ -21,6 +21,7 @@ public struct NavigationContext<RouteType: Route,
                 .navigationDestination(for: RouteType.self) { route in
                     NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
                 }
+                .background(TransparentBackground())
         }
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { transition in
@@ -47,7 +48,6 @@ public struct NavigationContext<RouteType: Route,
             .background(transition.backgroundColor)
             .transition(transition.style)
         }
-        .background(coordinator.backgroundColor)
     }
 
     init(rootRoute: RouteType,
@@ -56,4 +56,3 @@ public struct NavigationContext<RouteType: Route,
         self._tranisitionContext = StateObject(wrappedValue: .init(rootRoute: rootRoute, delegate: coordinator, prevTransitionContext: nil))
     }
 }
-
