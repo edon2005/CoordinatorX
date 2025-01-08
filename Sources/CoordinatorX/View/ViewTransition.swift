@@ -36,7 +36,7 @@ public enum ViewTransition: TransitionTypeProtocol {
         .overlay(options)
     }
 
-    public static var overlay: Self { .sheet() }
+    public static var overlay: Self { .overlay() }
 
     public static func sheet(_ options: TransitionOptions...) -> Self {
         .sheet(options)
