@@ -11,10 +11,6 @@ struct StatusBar: ViewModifier {
 
     let isHidden: Bool
 
-    init(isHidden: Bool) {
-        self.isHidden = isHidden
-    }
-
     func body(content: Content) -> some View {
         let _ = statusBarHiddenSubject.send(isHidden)
         content

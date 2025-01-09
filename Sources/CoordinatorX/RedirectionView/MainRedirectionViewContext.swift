@@ -9,6 +9,10 @@ import SwiftUI
 
 public struct MainRedirectionViewContext<CoordinatorType: RedirectionCoordinator>: View {
     let coordinator: CoordinatorType
+
+    public init(coordinator: CoordinatorType) {
+        self.coordinator = coordinator
+    }
 }
 
 public extension MainRedirectionViewContext {

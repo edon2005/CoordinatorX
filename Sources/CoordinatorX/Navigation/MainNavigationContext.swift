@@ -9,6 +9,10 @@ import SwiftUI
 
 public struct MainNavigationContext<CoordinatorType: NavigationCoordinator>: View {
     let coordinator: CoordinatorType
+
+    public init(coordinator: CoordinatorType) {
+        self.coordinator = coordinator
+    }
 }
 
 public extension MainNavigationContext {
