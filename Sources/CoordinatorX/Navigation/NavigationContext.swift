@@ -5,13 +5,19 @@
 //  Created by Yevhen Don on 11/11/2024.
 //
 
+@preconcurrency import Combine
 import SwiftUI
+
+let statusBarHiddenSubject = CurrentValueSubject<Bool, Never>(false)
 
 public struct NavigationContext<RouteType: Route,
                                 CoordinatorType: NavigationCoordinator>: Context where CoordinatorType.RouteType == RouteType {
 
     @StateObject
     public var tranisitionContext: NavigationTransitionContext<RouteType, CoordinatorType>
+
+    @State
+    private var isStatusBarHidden = false
 
     private let coordinator: CoordinatorType
 
@@ -48,6 +54,10 @@ public struct NavigationContext<RouteType: Route,
             .background(transition.backgroundColor)
             .transition(transition.style)
         }
+        .onReceive(statusBarHiddenSubject.eraseToAnyPublisher()) { value in
+            isStatusBarHidden = value
+        }
+        .statusBar(hidden: isStatusBarHidden)
     }
 
     init(rootRoute: RouteType,
