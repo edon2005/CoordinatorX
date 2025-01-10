@@ -8,8 +8,6 @@
 @preconcurrency import Combine
 import SwiftUI
 
-let statusBarHiddenSubject = CurrentValueSubject<Bool, Never>(false)
-
 public struct NavigationContext<RouteType: Route,
                                 CoordinatorType: NavigationCoordinator>: Context where CoordinatorType.RouteType == RouteType {
 
@@ -54,8 +52,9 @@ public struct NavigationContext<RouteType: Route,
             .background(transition.backgroundColor)
             .transition(transition.style)
         }
-        .onReceive(statusBarHiddenSubject.eraseToAnyPublisher()) { value in
-            isStatusBarHidden = value
+        .onPreferenceChange(NavStatusBarHiddenKey.self) { [$isStatusBarHidden] value in
+            guard let value else { return }
+            $isStatusBarHidden.wrappedValue = value
         }
         .statusBar(hidden: isStatusBarHidden)
     }

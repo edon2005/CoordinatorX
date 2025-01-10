@@ -7,19 +7,18 @@
 
 import SwiftUI
 
-struct StatusBar: ViewModifier {
 
-    let isHidden: Bool
+struct NavStatusBarHiddenKey: PreferenceKey {
+    static let defaultValue: Bool? = nil
 
-    func body(content: Content) -> some View {
-        let _ = statusBarHiddenSubject.send(isHidden)
-        content
+    static func reduce(value: inout Bool?, nextValue: () -> Bool?) {
+        guard let result = nextValue() else { return }
+        value = result
     }
 }
 
 extension View {
     public func navStatusBar(isHidden: Bool) -> some View {
-        let statusBar = StatusBar(isHidden: isHidden)
-        return modifier(statusBar)
+        preference(key: NavStatusBarHiddenKey.self, value: isHidden)
     }
 }
