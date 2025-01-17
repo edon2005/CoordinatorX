@@ -58,10 +58,11 @@ public final class NavigationViewTransitionContext<RouteType: Route, Coordinator
     }
 
     private func dismiss() {
-        prevTransitionContext?.sheetRoute = nil
-        prevTransitionContext?.overlayRoute = nil
+        let activeContext = prevTransitionContext ?? self
+        activeContext.sheetRoute = nil
+        activeContext.overlayRoute = nil
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
-        prevTransitionContext?.fullScreenRoute = nil
+        activeContext.fullScreenRoute = nil
 #endif
     }
 

@@ -24,7 +24,11 @@ public final class NavigationTransitionContext<RouteType: Route,
     var sheetRoute: Transition<RouteType>?
 
     @Published
-    var path: [RouteType] = []
+    var path: [RouteType] = [] {
+        didSet {
+            delegate?.activeRoute = path.last ?? delegate?.initialRoute
+        }
+    }
 
     nonisolated(unsafe) var onDeinit: (() -> Void)?
 
@@ -40,6 +44,9 @@ public final class NavigationTransitionContext<RouteType: Route,
         self.prevTransitionContext = prevTransitionContext
         self.isRoot = prevTransitionContext == nil
         self.prevTransitionContext?.nextTransitionContext = self
+        if prevTransitionContext == nil {
+            self.delegate?.activeRoute = rootRoute
+        }
     }
 
     deinit {
