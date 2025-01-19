@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct TransparentBackground: UIViewRepresentable {
-    func makeUIView(context: Self.Context) -> UIView {
+public struct TransparentBackground: UIViewRepresentable {
+    public init() {}
+
+    public func makeUIView(context: Self.Context) -> UIView {
         let view = UIView()
         DispatchQueue.main.async {
             view.superview?.superview?.backgroundColor = .clear
@@ -16,5 +18,5 @@ struct TransparentBackground: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Self.Context) { }
+    public func updateUIView(_ uiView: UIView, context: Self.Context) { }
 }
