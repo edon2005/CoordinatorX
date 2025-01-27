@@ -69,11 +69,11 @@ final class AppCoordinator: ViewCoordinator {
     func prepareView(for route: AppRoute, router: any Router<AppRoute>) -> some View {
         switch route {
         case .splash:
-            let viewModel = TemplateViewModel(color: .red, nextStep: .onboarding, router: router)
+            lazy var viewModel = TemplateViewModel(color: .red, nextStep: .onboarding, router: router)
             TemplateView(viewModel: viewModel)
 
         case .onboarding:
-            let coordinator = OnboardingCoordinator(initialRoute: .screen1, parentRouter: router)
+            lazy var coordinator = OnboardingCoordinator(initialRoute: .screen1, parentRouter: router)
             OnboardingFlow(coordinator: coordinator)
         ....
         }
@@ -107,6 +107,18 @@ struct CoordinatorX_ExampleApp: App {
 }
 ```
 <br/>
+
+## Example in AppStore
+</br>
+<p>
+ <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./qisdom_animation.gif">
+  <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="./qisdom_animation.gif">
+</picture>
+</p>
+</br>
+
+https://apps.apple.com/pl/app/qisdom/id1500475474
 
 ## 🛠 Installation
 
