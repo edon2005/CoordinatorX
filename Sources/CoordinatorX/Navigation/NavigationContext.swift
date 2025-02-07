@@ -27,7 +27,6 @@ public struct NavigationContext<RouteType: Route,
                 }
                 .background(TransparentBackground())
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { transition in
             ZStack {
