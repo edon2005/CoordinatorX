@@ -108,17 +108,22 @@ struct CoordinatorX_ExampleApp: App {
 ```
 <br/>
 
-## Example in AppStore
+## Examples in AppStore
+https://apps.apple.com/us/app/netti-app/id1595456600
 </br>
+https://apps.apple.com/pl/app/qisdom/id1500475474
+</br>
+
 <p>
+  <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="./nettiapp_animation.gif">
+   <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="./nettiapp_animation.gif">
+  </picture>
  <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./qisdom_animation.gif">
   <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="./qisdom_animation.gif">
 </picture>
 </p>
-</br>
-
-https://apps.apple.com/pl/app/qisdom/id1500475474
 
 ## 🛠 Installation
 
