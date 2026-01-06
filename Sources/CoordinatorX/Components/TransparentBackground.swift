@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
 public struct TransparentBackground: UIViewRepresentable {
     public init() {}
 
@@ -24,3 +25,4 @@ final class TransparentView: UIView {
         super.layoutSubviews()
     }
 }
+#endif

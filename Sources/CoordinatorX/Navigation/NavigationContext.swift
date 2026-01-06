@@ -25,7 +25,9 @@ public struct NavigationContext<RouteType: Route,
                 .navigationDestination(for: RouteType.self) { route in
                     NavigationViewContext(rootRoute: route, coordinator: coordinator, rootTransitionContext: tranisitionContext)
                 }
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
                 .background(TransparentBackground())
+#endif
         }
 #if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         .fullScreenCover(item: $tranisitionContext.fullScreenRoute) { transition in
@@ -56,7 +58,9 @@ public struct NavigationContext<RouteType: Route,
             guard let value else { return }
             $isStatusBarHidden.wrappedValue = value
         }
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
         .statusBar(hidden: isStatusBarHidden)
+#endif
     }
 
     init(rootRoute: RouteType,

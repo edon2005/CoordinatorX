@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if os(iOS) || os(watchOS) || os(tvOS) || os(visionOS)
 extension View {
     public func statusBarStyle(_ style: UIStatusBarStyle) -> some View {
         self.background(StatusBarStyleModifier(style: style))
@@ -36,3 +37,4 @@ final class StatusBarViewController: UIViewController {
         statusBarStyle
     }
 }
+#endif
